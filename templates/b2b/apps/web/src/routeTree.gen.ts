@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CreateOrganizationRouteImport } from './routes/create-organization'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MembersIndexRouteImport } from './routes/members/index'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthComponentsSigninformRouteImport } from './routes/auth/_components/signinform'
 
 const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
   id: '/create-organization',
@@ -23,6 +23,11 @@ const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersIndexRoute = MembersIndexRouteImport.update({
+  id: '/members/',
+  path: '/members/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignupRoute = AuthSignupRouteImport.update({
@@ -35,26 +40,20 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthComponentsSigninformRoute =
-  AuthComponentsSigninformRouteImport.update({
-    id: '/auth/_components/signinform',
-    path: '/auth/signinform',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/auth/signinform': typeof AuthComponentsSigninformRoute
+  '/members': typeof MembersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/auth/signinform': typeof AuthComponentsSigninformRoute
+  '/members': typeof MembersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,7 +61,7 @@ export interface FileRoutesById {
   '/create-organization': typeof CreateOrganizationRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/auth/_components/signinform': typeof AuthComponentsSigninformRoute
+  '/members/': typeof MembersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,21 +70,16 @@ export interface FileRouteTypes {
     | '/create-organization'
     | '/auth/login'
     | '/auth/signup'
-    | '/auth/signinform'
+    | '/members'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/create-organization'
-    | '/auth/login'
-    | '/auth/signup'
-    | '/auth/signinform'
+  to: '/' | '/create-organization' | '/auth/login' | '/auth/signup' | '/members'
   id:
     | '__root__'
     | '/'
     | '/create-organization'
     | '/auth/login'
     | '/auth/signup'
-    | '/auth/_components/signinform'
+    | '/members/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,7 +87,7 @@ export interface RootRouteChildren {
   CreateOrganizationRoute: typeof CreateOrganizationRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
-  AuthComponentsSigninformRoute: typeof AuthComponentsSigninformRoute
+  MembersIndexRoute: typeof MembersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -112,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/members/': {
+      id: '/members/'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof MembersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/signup': {
       id: '/auth/signup'
       path: '/auth/signup'
@@ -126,13 +127,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/_components/signinform': {
-      id: '/auth/_components/signinform'
-      path: '/auth/signinform'
-      fullPath: '/auth/signinform'
-      preLoaderRoute: typeof AuthComponentsSigninformRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -141,7 +135,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateOrganizationRoute: CreateOrganizationRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
-  AuthComponentsSigninformRoute: AuthComponentsSigninformRoute,
+  MembersIndexRoute: MembersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

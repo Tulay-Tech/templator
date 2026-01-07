@@ -49,14 +49,14 @@ function RouteComponent() {
 
       if (result.error) {
         setError(result.error.message || "Failed to sign up");
+        setLoading(false);
       } else {
-        // Redirect to create-organization page after successful signup
-        navigate({ to: "/create-organization" });
+        // Force navigation using window.location as a fallback
+        window.location.href = "/create-organization";
       }
     } catch (err) {
       setError("An unexpected error occurred");
       console.error(err);
-    } finally {
       setLoading(false);
     }
   };

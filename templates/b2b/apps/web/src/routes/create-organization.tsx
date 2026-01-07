@@ -63,17 +63,20 @@ function CreateOrganizationPage() {
 
       if (result.error) {
         setError(result.error.message || "Failed to create organization");
+        setLoading(false);
       } else {
-        // Invalidate the organizations query to force a refresh
+        // Invalidate and wait for the query to refetch
         await queryClient.invalidateQueries({ queryKey: ["organizations"] });
 
-        // Navigate to home
-        await navigate({ to: "/" });
+        // Use router.navigate instead of the navigate hook for more reliable navigation
+        router.navigate({ to: "/" });
+
+        // Or alternatively, use window.location if you need a hard refresh:
+        // window.location.href = "/";
       }
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
       console.error(err);
-    } finally {
       setLoading(false);
     }
   };
