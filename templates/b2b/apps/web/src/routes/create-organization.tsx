@@ -1,4 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/create-organization")({
   component: CreateOrganizationPage,
@@ -18,6 +23,8 @@ export const Route = createFileRoute("/create-organization")({
 
 function CreateOrganizationPage() {
   const navigate = useNavigate();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [error, setError] = useState("");
@@ -57,6 +64,10 @@ function CreateOrganizationPage() {
       if (result.error) {
         setError(result.error.message || "Failed to create organization");
       } else {
+        // Invalidate the organizations query to force a refresh
+        await queryClient.invalidateQueries({ queryKey: ["organizations"] });
+
+        // Navigate to home
         await navigate({ to: "/" });
       }
     } catch (err: any) {

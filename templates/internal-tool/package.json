@@ -11,9 +11,7 @@
       "zod": "^4.1.13",
       "typescript": "^5",
       "@types/bun": "^1.3.4",
-      "better-auth": "^1.4.9",
-      "@libsql/client": "0.15.15",
-      "libsql": "0.5.22"
+      "better-auth": "^1.4.9"
     }
   },
   "type": "module",
@@ -28,7 +26,10 @@
     "db:studio": "turbo -F @internal-tool/db db:studio",
     "db:generate": "turbo -F @internal-tool/db db:generate",
     "db:migrate": "turbo -F @internal-tool/db db:migrate",
-    "db:local": "turbo -F @internal-tool/db db:local"
+    "db:start": "turbo -F @internal-tool/db db:start",
+    "db:watch": "turbo -F @internal-tool/db db:watch",
+    "db:stop": "turbo -F @internal-tool/db db:stop",
+    "db:down": "turbo -F @internal-tool/db db:down"
   },
   "dependencies": {
     "@internal-tool/env": "workspace:*",

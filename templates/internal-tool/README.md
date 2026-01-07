@@ -11,8 +11,9 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **Express** - Fast, unopinionated web framework
 - **Bun** - Runtime environment
 - **Drizzle** - TypeScript-first ORM
-- **SQLite/Turso** - Database engine
+- **PostgreSQL** - Database engine
 - **Authentication** - Better-Auth
+- **PWA** - Progressive Web App support
 - **Turborepo** - Optimized monorepo build system
 
 ## Getting Started
@@ -25,15 +26,10 @@ bun install
 
 ## Database Setup
 
-This project uses SQLite with Drizzle ORM.
+This project uses PostgreSQL with Drizzle ORM.
 
-1. Start the local SQLite database (optional):
-
-```bash
-bun run db:local
-```
-
-2. Update your `.env` file in the `apps/server` directory with the appropriate connection details if needed.
+1. Make sure you have a PostgreSQL database set up.
+2. Update your `apps/server/.env` file with your PostgreSQL connection details.
 
 3. Apply the schema to your database:
 
@@ -72,4 +68,4 @@ internal-tool/
 - `bun run check-types`: Check TypeScript types across all apps
 - `bun run db:push`: Push schema changes to database
 - `bun run db:studio`: Open database studio UI
-- `bun run db:local`: Start the local SQLite database
+- `cd apps/web && bun run generate-pwa-assets`: Generate PWA assets

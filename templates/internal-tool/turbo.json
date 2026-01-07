@@ -30,7 +30,18 @@
     "db:generate": {
       "cache": false
     },
-    "db:local": {
+    "db:start": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:stop": {
+      "cache": false
+    },
+    "db:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:down": {
       "cache": false
     }
   }

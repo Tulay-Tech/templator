@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/auth/login")({
   component: RouteComponent,
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/auth/login")({
 
 function RouteComponent() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,14 +31,17 @@ function RouteComponent() {
 
       if (result.error) {
         setError(result.error.message || "Failed to sign in");
+        setLoading(false);
       } else {
-        // Redirect to dashboard or home page after successful login
-        navigate({ to: "/" });
+        // Clear existing queries
+        queryClient.clear();
+
+        // Force a full page reload to ensure session is properly loaded
+        window.location.href = "/";
       }
     } catch (err) {
       setError("An unexpected error occurred");
       console.error(err);
-    } finally {
       setLoading(false);
     }
   };

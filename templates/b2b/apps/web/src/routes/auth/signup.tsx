@@ -50,8 +50,8 @@ function RouteComponent() {
       if (result.error) {
         setError(result.error.message || "Failed to sign up");
       } else {
-        // Redirect to dashboard or home page after successful signup
-        navigate({ to: "/" });
+        // Redirect to create-organization page after successful signup
+        navigate({ to: "/create-organization" });
       }
     } catch (err) {
       setError("An unexpected error occurred");
