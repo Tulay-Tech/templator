@@ -1,0 +1,26 @@
+{
+  "name": "@b2b/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@b2b/db": "workspace:*",
+    "@b2b/env": "workspace:*",
+    "@polar-sh/better-auth": "catalog:",
+    "@polar-sh/sdk": "^0.34.16",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@b2b/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,22 @@
+// Better-T-Stack configuration file
+// safe to delete
+
+{
+  "$schema": "https://r2.better-t-stack.dev/schema.json",
+  "version": "3.14.2",
+  "createdAt": "2026-01-07T00:04:39.712Z",
+  "database": "sqlite",
+  "orm": "drizzle",
+  "backend": "express",
+  "runtime": "bun",
+  "frontend": ["tanstack-router"],
+  "addons": ["fumadocs", "turborepo"],
+  "examples": [],
+  "auth": "better-auth",
+  "payments": "polar",
+  "packageManager": "bun",
+  "dbSetup": "turso",
+  "api": "none",
+  "webDeploy": "none",
+  "serverDeploy": "none",
+}
