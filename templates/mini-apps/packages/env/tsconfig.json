@@ -1,0 +1,3 @@
+{
+  "extends": "@mini-apps/config/tsconfig.base.json"
+}
