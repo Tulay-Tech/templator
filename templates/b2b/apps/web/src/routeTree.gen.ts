@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OrgSelectRouteImport } from './routes/org-select'
 import { Route as CreateOrganizationRouteImport } from './routes/create-organization'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MembersIndexRouteImport } from './routes/members/index'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 
+const OrgSelectRoute = OrgSelectRouteImport.update({
+  id: '/org-select',
+  path: '/org-select',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
   id: '/create-organization',
   path: '/create-organization',
@@ -44,6 +50,7 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
+  '/org-select': typeof OrgSelectRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/members': typeof MembersIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
+  '/org-select': typeof OrgSelectRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/members': typeof MembersIndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
+  '/org-select': typeof OrgSelectRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/members/': typeof MembersIndexRoute
@@ -68,15 +77,23 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/create-organization'
+    | '/org-select'
     | '/auth/login'
     | '/auth/signup'
     | '/members'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create-organization' | '/auth/login' | '/auth/signup' | '/members'
+  to:
+    | '/'
+    | '/create-organization'
+    | '/org-select'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/members'
   id:
     | '__root__'
     | '/'
     | '/create-organization'
+    | '/org-select'
     | '/auth/login'
     | '/auth/signup'
     | '/members/'
@@ -85,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateOrganizationRoute: typeof CreateOrganizationRoute
+  OrgSelectRoute: typeof OrgSelectRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
   MembersIndexRoute: typeof MembersIndexRoute
@@ -92,6 +110,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/org-select': {
+      id: '/org-select'
+      path: '/org-select'
+      fullPath: '/org-select'
+      preLoaderRoute: typeof OrgSelectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/create-organization': {
       id: '/create-organization'
       path: '/create-organization'
@@ -133,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateOrganizationRoute: CreateOrganizationRoute,
+  OrgSelectRoute: OrgSelectRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
   MembersIndexRoute: MembersIndexRoute,

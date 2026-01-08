@@ -10,10 +10,8 @@ import { QueryClient, useQuery } from "@tanstack/react-query";
 import "../index.css";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
-
 import { authClient } from "@/lib/auth-client";
 
-import "../index.css";
 import {
   SidebarInset,
   SidebarProvider,
@@ -35,12 +33,13 @@ export interface RouterAppContext {
   queryClient: QueryClient;
 }
 
-// Create this function outside the component
+// Fetch session
 const fetchSession = async () => {
   const session = await authClient.getSession();
   return session.data;
 };
 
+// Fetch organizations
 const checkUserOrganizations = async () => {
   const orgs = await authClient.organization.list();
   return orgs.data || [];
@@ -51,8 +50,9 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   beforeLoad: async ({ location, context }) => {
     const isAuthRoute = location.pathname.startsWith("/auth");
     const isCreateOrgRoute = location.pathname === "/create-organization";
+    const isOrgSelectRoute = location.pathname === "/org-select";
 
-    // Use TanStack Query to cache the session
+    // Fetch session
     const session = await context.queryClient.ensureQueryData({
       queryKey: ["session"],
       queryFn: fetchSession,
@@ -61,24 +61,19 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
     const isAuthenticated = !!session;
 
-    // If NOT authenticated and trying to access protected routes, redirect to auth
+    // Redirect if not authenticated
     if (!isAuthenticated && !isAuthRoute) {
       throw redirect({
         to: "/auth/login",
-        search: {
-          redirect: location.href,
-        },
+        search: { redirect: location.href },
       });
     }
 
-    // If logged in and trying to access auth pages, redirect to home
+    // Redirect authenticated users away from auth pages
     if (isAuthenticated && isAuthRoute) {
-      throw redirect({
-        to: "/",
-      });
+      throw redirect({ to: "/" });
     }
 
-    // Check organizations for authenticated users
     if (isAuthenticated) {
       const organizations = await context.queryClient.ensureQueryData({
         queryKey: ["organizations"],
@@ -86,45 +81,47 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         staleTime: 5 * 60 * 1000,
       });
 
-      // If they have no orgs and not on create-org page, redirect there
-      if (organizations.length === 0 && !isCreateOrgRoute) {
-        throw redirect({
-          to: "/create-organization",
-        });
+      const hasOrgs = organizations.length > 0;
+      const activeOrgSet = !!session.session.activeOrganizationId;
+
+      // Redirect to create org if no organizations
+      if (!hasOrgs && !isCreateOrgRoute) {
+        throw redirect({ to: "/create-organization" });
       }
 
-      // If they have orgs and trying to visit create-org page, redirect to home
-      if (organizations.length > 0 && isCreateOrgRoute) {
-        throw redirect({
-          to: "/",
-        });
+      // Redirect to home if trying to create org but org exists
+      if (hasOrgs && isCreateOrgRoute) {
+        throw redirect({ to: "/" });
+      }
+
+      // Redirect to org select if user has orgs but no active organization
+      if (hasOrgs && !activeOrgSet && !isOrgSelectRoute) {
+        throw redirect({ to: "/org-select" });
+      }
+
+      // NEW: Redirect away from org-select if active org is already set
+      if (hasOrgs && activeOrgSet && isOrgSelectRoute) {
+        throw redirect({ to: "/" });
       }
     }
   },
   head: () => ({
     meta: [
-      {
-        title: "B2B template",
-      },
-      {
-        name: "description",
-        content: "b2b is a web application",
-      },
+      { title: "B2B template" },
+      { name: "description", content: "b2b is a web application" },
     ],
-    links: [
-      {
-        rel: "icon",
-        href: "/favicon.ico",
-      },
-    ],
+    links: [{ rel: "icon", href: "/favicon.ico" }],
   }),
 });
 
 function RootComponent() {
   const router = useRouterState();
-  const isAuthRoute = router.location.pathname.startsWith("/auth");
+  const isAuthRoute =
+    router.location.pathname.startsWith("/auth") ||
+    router.location.pathname.startsWith("/create-organization") ||
+    router.location.pathname.startsWith("/org-select");
 
-  // Fetch session and organizations
+  // Fetch session
   const { data: session } = useQuery({
     queryKey: ["session"],
     queryFn: fetchSession,
@@ -132,6 +129,7 @@ function RootComponent() {
     staleTime: 5 * 60 * 1000,
   });
 
+  // Fetch organizations if authenticated
   const { data: organizations } = useQuery({
     queryKey: ["organizations"],
     queryFn: checkUserOrganizations,
@@ -159,7 +157,7 @@ function RootComponent() {
               organizations?.map((org) => ({
                 name: org.name,
                 logo: org.logo || "",
-                plan: "Free", // You can add a plan field to your org schema
+                plan: "Free",
                 id: org.id,
               })) || []
             }
