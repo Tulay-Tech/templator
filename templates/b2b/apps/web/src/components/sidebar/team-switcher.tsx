@@ -32,25 +32,22 @@ interface Team {
 export function TeamSwitcher({ teams }: { teams: Team[] }) {
   const { isMobile } = useSidebar();
   const queryClient = useQueryClient();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const [activeTeam, setActiveTeam] = React.useState<Team>(teams[0]);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [isSwitching, setIsSwitching] = React.useState(false);
 
-  if (!activeTeam) {
-    return null;
-  }
+  if (!activeTeam) return null;
 
   const renderLogo = (
     logo: string | React.ElementType,
     size: string = "size-4"
   ) => {
-    if (typeof logo === "string") {
+    if (typeof logo === "string")
       return logo ? (
         <img src={logo} alt="" className={`${size} object-cover`} />
       ) : (
         <Building2 className={size} />
       );
-    }
     const LogoComponent = logo;
     return <LogoComponent className={size} />;
   };
@@ -60,7 +57,7 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
 
     setIsSwitching(true);
     try {
-      // Set the active organization in Better Auth
+      // Set the active organization in BetterAuth
       const { data, error } = await authClient.organization.setActive({
         organizationId: team.id,
       });
@@ -73,11 +70,11 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
       // Update local state
       setActiveTeam(team);
 
-      // Invalidate session to get updated active organization
+      // Refresh session queries
       await queryClient.invalidateQueries({ queryKey: ["session"] });
 
-      // Optionally reload the page to refresh all org-specific data
-      // window.location.reload();
+      // FULL PAGE REFRESH to reflect the new organization everywhere
+      window.location.reload();
     } catch (err) {
       console.error("Error switching organization:", err);
     } finally {

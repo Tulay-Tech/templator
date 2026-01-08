@@ -51,23 +51,38 @@ export function CreateOrganizationDialog({
     setIsLoading(true);
 
     try {
-      const { data, error } = await authClient.organization.create({
-        name: formData.name,
-        slug: formData.slug,
-        logo: formData.logo || undefined,
-      });
+      // 1️⃣ Create the organization
+      const { data: newOrg, error: createError } =
+        await authClient.organization.create({
+          name: formData.name,
+          slug: formData.slug,
+          logo: formData.logo || undefined,
+        });
 
-      if (error) {
-        setError(error.message || "Failed to create organization");
+      if (createError) {
+        setError(createError.message || "Failed to create organization");
         return;
       }
 
-      // Invalidate and refetch organizations
-      await queryClient.invalidateQueries({ queryKey: ["organizations"] });
+      // 2️⃣ Set it as active immediately
+      const { error: setActiveError } = await authClient.organization.setActive(
+        {
+          organizationId: newOrg.id,
+        }
+      );
 
-      // Reset form and close dialog
+      if (setActiveError)
+        console.error("Failed to set active org:", setActiveError);
+
+      // 3️⃣ Refresh session queries so activeOrganizationId updates
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+
+      // 4️⃣ Reset form and close dialog
       setFormData({ name: "", slug: "", logo: "" });
       onOpenChange(false);
+
+      // 5️⃣ Reload page to reflect new org everywhere
+      window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

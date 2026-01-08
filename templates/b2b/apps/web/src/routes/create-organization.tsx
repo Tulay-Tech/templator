@@ -1,141 +1,166 @@
+"use client";
+
+import * as React from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { authClient } from "@/lib/auth-client";
 import {
-  createFileRoute,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
-import { useState } from "react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authClient } from "@/lib/auth-client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
-export const Route = createFileRoute("/create-organization")({
-  component: CreateOrganizationPage,
-});
+interface CreateOrganizationDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
-function CreateOrganizationPage() {
-  const navigate = useNavigate();
-  const router = useRouter();
+export function CreateOrganizationDialog({
+  open,
+  onOpenChange,
+}: CreateOrganizationDialogProps) {
   const queryClient = useQueryClient();
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [formData, setFormData] = React.useState({
+    name: "",
+    slug: "",
+    logo: "",
+  });
 
-  const handleNameChange = (value: string) => {
-    setName(value);
-    const generatedSlug = value
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-    setSlug(generatedSlug);
-  };
+  // Auto-generate slug from name
+  React.useEffect(() => {
+    if (formData.name && !formData.slug) {
+      const generatedSlug = formData.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      setFormData((prev) => ({ ...prev, slug: generatedSlug }));
+    }
+  }, [formData.name]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    if (!name || !slug) {
-      setError("Organization name and slug are required");
-      return;
-    }
-
-    if (slug.length < 3) {
-      setError("Slug must be at least 3 characters long");
-      return;
-    }
-
-    setLoading(true);
+    setError(null);
+    setIsLoading(true);
 
     try {
-      const result = await authClient.organization.create({
-        name,
-        slug,
-      });
+      // 1️⃣ Create the organization
+      const { data: newOrg, error: createError } =
+        await authClient.organization.create({
+          name: formData.name,
+          slug: formData.slug,
+          logo: formData.logo || undefined,
+        });
 
-      if (result.error) {
-        setError(result.error.message || "Failed to create organization");
-        setLoading(false);
-      } else {
-        // Invalidate and wait for the query to refetch
-        await queryClient.invalidateQueries({ queryKey: ["organizations"] });
-
-        // Use router.navigate instead of the navigate hook for more reliable navigation
-        router.navigate({ to: "/" });
-
-        // Or alternatively, use window.location if you need a hard refresh:
-        // window.location.href = "/";
+      if (createError) {
+        setError(createError.message || "Failed to create organization");
+        return;
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
-      console.error(err);
-      setLoading(false);
+
+      // 2️⃣ Set it as active immediately
+      const { error: setActiveError } = await authClient.organization.setActive(
+        {
+          organizationId: newOrg.id,
+        }
+      );
+
+      if (setActiveError)
+        console.error("Failed to set active org:", setActiveError);
+
+      // 3️⃣ Refresh session queries so activeOrganizationId updates
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+
+      // 4️⃣ Reset form and close dialog
+      setFormData({ name: "", slug: "", logo: "" });
+      onOpenChange(false);
+
+      // 5️⃣ Reload page to reflect new org everywhere
+      window.location.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Create Your Organization</CardTitle>
-          <CardDescription>
-            You need to create an organization to continue. This will be your
-            workspace.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="org-name">Organization Name</Label>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-106.25">
+        <DialogHeader>
+          <DialogTitle>Create Organization</DialogTitle>
+          <DialogDescription>
+            Add a new organization to manage your team and projects.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Organization Name</Label>
               <Input
-                id="org-name"
-                placeholder="My Company"
-                value={name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                disabled={loading}
+                id="name"
+                placeholder="Acme Inc."
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
+                disabled={isLoading}
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="org-slug">Slug (URL identifier)</Label>
+            <div className="grid gap-2">
+              <Label htmlFor="slug">Slug</Label>
               <Input
-                id="org-slug"
-                placeholder="my-company"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                disabled={loading}
+                id="slug"
+                placeholder="acme-inc"
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, slug: e.target.value }))
+                }
                 required
+                disabled={isLoading}
               />
-              <p className="text-sm text-muted-foreground">
-                This will be used in your organization's URL
+              <p className="text-xs text-muted-foreground">
+                Used in URLs. Only lowercase letters, numbers, and hyphens.
               </p>
             </div>
-
-            {error && (
-              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
-
+            <div className="grid gap-2">
+              <Label htmlFor="logo">Logo URL (optional)</Label>
+              <Input
+                id="logo"
+                type="url"
+                placeholder="https://example.com/logo.png"
+                value={formData.logo}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, logo: e.target.value }))
+                }
+                disabled={isLoading}
+              />
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+          </div>
+          <DialogFooter>
             <Button
-              type="submit"
-              className="w-full"
-              disabled={loading || !name || !slug}
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isLoading}
             >
-              {loading ? "Creating..." : "Create Organization"}
+              Cancel
             </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Create Organization
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
