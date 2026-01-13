@@ -10,19 +10,20 @@
     }
   },
   "scripts": {
-    "db:local": "turso dev --db-file local.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:start": "docker compose up -d",
+    "db:watch": "docker compose up",
+    "db:stop": "docker compose stop",
+    "db:down": "docker compose down"
   },
   "dependencies": {
     "@b2b/env": "workspace:*",
-    "@libsql/client": "catalog:",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.1",
-    "libsql": "catalog:",
-    "mysql2": "^3.16.0",
+    "mysql2": "^3.14.0",
     "zod": "catalog:"
   },
   "devDependencies": {

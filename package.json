@@ -30,7 +30,10 @@
     "db:studio": "turbo -F @b2b/db db:studio",
     "db:generate": "turbo -F @b2b/db db:generate",
     "db:migrate": "turbo -F @b2b/db db:migrate",
-    "db:local": "turbo -F @b2b/db db:local",
+    "db:start": "turbo -F @b2b/db db:start",
+    "db:watch": "turbo -F @b2b/db db:watch",
+    "db:stop": "turbo -F @b2b/db db:stop",
+    "db:down": "turbo -F @b2b/db db:down",
     "auth:generate": "bunx --env-file=apps/server/.env @better-auth/cli generate --config ./packages/auth/src/index.ts --output ./packages/db/src/schema/auth.ts --yes"
   },
   "dependencies": {
