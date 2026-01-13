@@ -1,0 +1,33 @@
+{
+  "name": "@b2b/db",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "db:local": "turso dev --db-file local.db",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@b2b/env": "workspace:*",
+    "@libsql/client": "catalog:",
+    "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
+    "libsql": "catalog:",
+    "mysql2": "^3.16.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@b2b/config": "workspace:*",
+    "drizzle-kit": "^0.31.8",
+    "typescript": "catalog:"
+  }
+}
