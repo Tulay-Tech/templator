@@ -11,9 +11,7 @@
       "zod": "^4.1.13",
       "typescript": "^5",
       "@types/bun": "^1.3.4",
-      "better-auth": "^1.4.9",
-      "@libsql/client": "0.15.15",
-      "libsql": "0.5.22",
+      "better-auth": "^1.4.12",
       "@polar-sh/better-auth": "^1.1.3"
     }
   },
@@ -34,7 +32,9 @@
     "db:watch": "turbo -F @b2b/db db:watch",
     "db:stop": "turbo -F @b2b/db db:stop",
     "db:down": "turbo -F @b2b/db db:down",
-    "auth:generate": "bunx --env-file=apps/server/.env @better-auth/cli generate --config ./packages/auth/src/index.ts --output ./packages/db/src/schema/auth.ts --yes"
+    "auth:generate": "bunx --env-file=apps/server/.env @better-auth/cli generate --config ./packages/auth/src/index.ts --output ./packages/db/src/schema/auth.ts --yes",
+    "outdated:all": "bun outdated --recursive",
+    "update:all": "bun update --recursive --interactive"
   },
   "dependencies": {
     "@b2b/env": "workspace:*",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@b2b/config": "workspace:*",
     "@types/bun": "catalog:",
-    "turbo": "^2.6.3",
+    "turbo": "^2.7.4",
     "typescript": "catalog:"
   },
   "packageManager": "bun@1.3.5"

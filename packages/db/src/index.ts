@@ -8,4 +8,5 @@ export const db = drizzle({
     uri: env.DATABASE_URL,
   },
   schema,
-} as any);
+  mode: "default",
+});

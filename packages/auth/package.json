@@ -14,7 +14,7 @@
     "@b2b/db": "workspace:*",
     "@b2b/env": "workspace:*",
     "@polar-sh/better-auth": "catalog:",
-    "@polar-sh/sdk": "^0.34.16",
+    "@polar-sh/sdk": "^0.42.1",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:"

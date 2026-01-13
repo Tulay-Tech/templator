@@ -32,6 +32,19 @@
     },
     "db:local": {
       "cache": false
+    },
+    "db:start": {
+      "cache": false
+    },
+    "db:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:stop": {
+      "cache": false
+    },
+    "db:down": {
+      "cache": false
     }
   }
 }
