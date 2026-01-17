@@ -6,10 +6,12 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Settings2,
   Sparkles,
+  UsersRound,
 } from "lucide-react";
 import * as React from "react";
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 
@@ -141,6 +143,18 @@ export function NavUser({
                 <Bell />
                 Notifications
               </DropdownMenuItem>
+              <Link to="/members">
+                <DropdownMenuItem>
+                  <UsersRound />
+                  Members
+                </DropdownMenuItem>
+              </Link>
+              <Link to="/settings">
+                <DropdownMenuItem>
+                  <Settings2 />
+                  Settings
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
