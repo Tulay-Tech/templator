@@ -5,27 +5,24 @@
   "scripts": {
     "build": "tsdown",
     "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-    "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js"
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server"
   },
   "dependencies": {
-    "@b2b/auth": "workspace:*",
-    "@b2b/db": "workspace:*",
-    "@b2b/env": "workspace:*",
+    "@templator/auth": "workspace:*",
+    "@templator/db": "workspace:*",
+    "@templator/env": "workspace:*",
     "better-auth": "catalog:",
-    "cors": "^2.8.5",
     "dotenv": "catalog:",
-    "express": "^5.1.0",
-    "inngest": "^3.49.1",
+    "hono": "^4.8.2",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@b2b/config": "workspace:*",
-    "@types/bun": "catalog:",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
-    "tsdown": "^0.20.0-beta.1",
-    "typescript": "catalog:"
+    "@cloudflare/workers-types": "catalog:",
+    "@templator/config": "workspace:*",
+    "@types/node": "catalog:",
+    "alchemy": "catalog:",
+    "tsdown": "^0.16.5",
+    "typescript": "catalog:",
+    "wrangler": "^4.54.0"
   }
 }

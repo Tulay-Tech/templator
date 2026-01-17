@@ -1,146 +1,175 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
-  boolean,
-  mysqlTable,
+  integer,
+  sqliteTable,
   text,
-  varchar,
-  timestamp,
-  datetime,
   index,
   uniqueIndex,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/sqlite-core";
 
 // --------------------
 // User Table
 // --------------------
-export const user = mysqlTable(
+export const user = sqliteTable(
   "user",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
-    emailVerified: boolean("email_verified").notNull().default(false),
+    id: text("id", { length: 36 }).primaryKey(),
+    name: text("name", { length: 255 }).notNull(),
+    email: text("email", { length: 255 }).notNull(),
+    emailVerified: integer("email_verified", { mode: "boolean" })
+      .notNull()
+      .default(false),
     image: text("image"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => new Date()),
   },
-  (table) => [uniqueIndex("user_email_uidx").on(table.email)]
+  (table) => [uniqueIndex("user_email_uidx").on(table.email)],
 );
 
 // --------------------
 // Session Table
 // --------------------
-export const session = mysqlTable(
+export const session = sqliteTable(
   "session",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    expiresAt: datetime("expires_at").notNull(),
-    token: varchar("token", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
-    ipAddress: varchar("ip_address", { length: 45 }),
+    id: text("id", { length: 36 }).primaryKey(),
+    expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    token: text("token", { length: 255 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => new Date()),
+    ipAddress: text("ip_address", { length: 45 }),
     userAgent: text("user_agent"),
-    userId: varchar("user_id", { length: 36 }).notNull(),
-    activeOrganizationId: varchar("active_organization_id", { length: 36 }),
+    userId: text("user_id", { length: 36 }).notNull(),
+    activeOrganizationId: text("active_organization_id", { length: 36 }),
   },
   (table) => [
     index("session_userId_idx").on(table.userId),
     uniqueIndex("session_token_uidx").on(table.token),
-  ]
+  ],
 );
 
 // --------------------
 // Account Table
 // --------------------
-export const account = mysqlTable(
+export const account = sqliteTable(
   "account",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    accountId: varchar("account_id", { length: 255 }).notNull(),
-    providerId: varchar("provider_id", { length: 255 }).notNull(),
-    userId: varchar("user_id", { length: 36 }).notNull(),
+    id: text("id", { length: 36 }).primaryKey(),
+    accountId: text("account_id", { length: 255 }).notNull(),
+    providerId: text("provider_id", { length: 255 }).notNull(),
+    userId: text("user_id", { length: 36 }).notNull(),
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
-    accessTokenExpiresAt: datetime("access_token_expires_at"),
-    refreshTokenExpiresAt: datetime("refresh_token_expires_at"),
+    accessTokenExpiresAt: integer("access_token_expires_at", {
+      mode: "timestamp",
+    }),
+    refreshTokenExpiresAt: integer("refresh_token_expires_at", {
+      mode: "timestamp",
+    }),
     scope: text("scope"),
     password: text("password"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => new Date()),
   },
-  (table) => [index("account_userId_idx").on(table.userId)]
+  (table) => [index("account_userId_idx").on(table.userId)],
 );
 
 // --------------------
 // Verification Table
 // --------------------
-export const verification = mysqlTable(
+export const verification = sqliteTable(
   "verification",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    identifier: varchar("identifier", { length: 255 }).notNull(),
+    id: text("id", { length: 36 }).primaryKey(),
+    identifier: text("identifier", { length: 255 }).notNull(),
     value: text("value").notNull(),
-    expiresAt: datetime("expires_at").notNull(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => new Date()),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)]
+  (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
 // --------------------
 // Organization Table
 // --------------------
-export const organization = mysqlTable(
+export const organization = sqliteTable(
   "organization",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    name: varchar("name", { length: 255 }).notNull(),
-    slug: varchar("slug", { length: 255 }).notNull(),
+    id: text("id", { length: 36 }).primaryKey(),
+    name: text("name", { length: 255 }).notNull(),
+    slug: text("slug", { length: 255 }).notNull(),
     logo: text("logo"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
     metadata: text("metadata"),
   },
-  (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)]
+  (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)],
 );
 
 // --------------------
 // Member Table
 // --------------------
-export const member = mysqlTable(
+export const member = sqliteTable(
   "member",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    organizationId: varchar("organization_id", { length: 36 }).notNull(),
-    userId: varchar("user_id", { length: 36 }).notNull(),
-    role: varchar("role", { length: 255 }).notNull().default("member"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    id: text("id", { length: 36 }).primaryKey(),
+    organizationId: text("organization_id", { length: 36 }).notNull(),
+    userId: text("user_id", { length: 36 }).notNull(),
+    role: text("role", { length: 255 }).notNull().default("member"),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
   },
   (table) => [
     index("member_organizationId_idx").on(table.organizationId),
     index("member_userId_idx").on(table.userId),
-  ]
+  ],
 );
 
 // --------------------
 // Invitation Table
 // --------------------
-export const invitation = mysqlTable(
+export const invitation = sqliteTable(
   "invitation",
   {
-    id: varchar("id", { length: 36 }).primaryKey(),
-    organizationId: varchar("organization_id", { length: 36 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
-    role: varchar("role", { length: 255 }),
-    status: varchar("status", { length: 255 }).notNull().default("pending"),
-    expiresAt: datetime("expires_at").notNull(),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-    inviterId: varchar("inviter_id", { length: 36 }).notNull(),
+    id: text("id", { length: 36 }).primaryKey(),
+    organizationId: text("organization_id", { length: 36 }).notNull(),
+    email: text("email", { length: 255 }).notNull(),
+    role: text("role", { length: 255 }),
+    status: text("status", { length: 255 }).notNull().default("pending"),
+    expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    inviterId: text("inviter_id", { length: 36 }).notNull(),
   },
   (table) => [
     index("invitation_organizationId_idx").on(table.organizationId),
     index("invitation_email_idx").on(table.email),
-  ]
+  ],
 );
 
 // --------------------

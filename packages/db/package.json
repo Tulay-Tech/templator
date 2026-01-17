@@ -1,5 +1,5 @@
 {
-  "name": "@b2b/db",
+  "name": "@templator/db",
   "type": "module",
   "exports": {
     ".": {
@@ -10,24 +10,22 @@
     }
   },
   "scripts": {
+    "db:local": "turso dev --db-file local.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "db:migrate": "drizzle-kit migrate",
-    "db:start": "docker compose up -d",
-    "db:watch": "docker compose up",
-    "db:stop": "docker compose stop",
-    "db:down": "docker compose down"
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@b2b/env": "workspace:*",
+    "@libsql/client": "catalog:",
+    "@templator/env": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.1",
-    "mysql2": "^3.14.0",
+    "libsql": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@b2b/config": "workspace:*",
+    "@templator/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
     "typescript": "catalog:"
   }

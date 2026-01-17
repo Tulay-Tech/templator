@@ -8,8 +8,9 @@ dotenv.config({
 export default defineConfig({
   schema: "./src/schema",
   out: "./src/migrations",
-  dialect: "mysql",
+  dialect: "turso",
   dbCredentials: {
     url: process.env.DATABASE_URL || "",
+    authToken: process.env.DATABASE_AUTH_TOKEN,
   },
 });

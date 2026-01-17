@@ -1,12 +1,12 @@
-import { env } from "@b2b/env/server";
-import { drizzle } from "drizzle-orm/mysql2";
+import { createClient } from "@libsql/client";
+import { env } from "@templator/env/server";
+import { drizzle } from "drizzle-orm/libsql";
 
 import * as schema from "./schema";
 
-export const db = drizzle({
-  connection: {
-    uri: env.DATABASE_URL,
-  },
-  schema,
-  mode: "default",
+const client = createClient({
+  url: env.DATABASE_URL || "",
+  authToken: env.DATABASE_AUTH_TOKEN,
 });
+
+export const db = drizzle({ client, schema });

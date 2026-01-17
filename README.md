@@ -1,6 +1,6 @@
-# b2b
+# templator
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Router, Express, and more.
+This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Router, Hono, and more.
 
 ## Features
 
@@ -8,11 +8,12 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **TanStack Router** - File-based routing with full type safety
 - **TailwindCSS** - Utility-first CSS for rapid UI development
 - **shadcn/ui** - Reusable UI components
-- **Express** - Fast, unopinionated web framework
-- **Bun** - Runtime environment
+- **Hono** - Lightweight, performant server framework
+- **workers** - Runtime environment
 - **Drizzle** - TypeScript-first ORM
 - **SQLite/Turso** - Database engine
 - **Authentication** - Better-Auth
+- **PWA** - Progressive Web App support
 - **Turborepo** - Optimized monorepo build system
 
 ## Getting Started
@@ -50,13 +51,21 @@ bun run dev
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 The API is running at [http://localhost:3000](http://localhost:3000).
 
+## Deployment (Cloudflare via Alchemy)
+
+- Dev: bun run dev
+- Deploy: bun run deploy
+- Destroy: bun run destroy
+
+For more details, see the guide on [Deploying to Cloudflare with Alchemy](https://www.better-t-stack.dev/docs/guides/cloudflare-alchemy).
+
 ## Project Structure
 
 ```
-b2b/
+templator/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Router)
-│   └── server/      # Backend API (Express)
+│   └── server/      # Backend API (Hono)
 ├── packages/
 │   ├── api/         # API layer / business logic
 │   ├── auth/        # Authentication configuration & logic
@@ -73,3 +82,4 @@ b2b/
 - `bun run db:push`: Push schema changes to database
 - `bun run db:studio`: Open database studio UI
 - `bun run db:local`: Start the local SQLite database
+- `cd apps/web && bun run generate-pwa-assets`: Generate PWA assets

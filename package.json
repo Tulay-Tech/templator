@@ -1,5 +1,5 @@
 {
-  "name": "b2b",
+  "name": "templator",
   "private": true,
   "workspaces": {
     "packages": [
@@ -10,41 +10,41 @@
       "dotenv": "^17.2.2",
       "zod": "^4.1.13",
       "typescript": "^5",
-      "@types/bun": "^1.3.4",
-      "better-auth": "^1.4.12",
-      "@polar-sh/better-auth": "^1.1.3"
+      "@types/node": "^22.13.14",
+      "@cloudflare/workers-types": "^4.20251213.0",
+      "better-auth": "^1.4.9",
+      "alchemy": "^0.82.1",
+      "@libsql/client": "0.15.15",
+      "libsql": "0.5.22",
+      "@polar-sh/better-auth": "^1.6.4"
     }
   },
   "type": "module",
   "scripts": {
     "dev": "turbo dev",
-    "dev:inngest": "bunx --ignore-scripts=false inngest-cli@latest dev -u http://localhost:3000/api/inngest",
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "db:push": "turbo -F @b2b/db db:push",
-    "db:studio": "turbo -F @b2b/db db:studio",
-    "db:generate": "turbo -F @b2b/db db:generate",
-    "db:migrate": "turbo -F @b2b/db db:migrate",
-    "db:start": "turbo -F @b2b/db db:start",
-    "db:watch": "turbo -F @b2b/db db:watch",
-    "db:stop": "turbo -F @b2b/db db:stop",
-    "db:down": "turbo -F @b2b/db db:down",
-    "auth:generate": "bunx --env-file=apps/server/.env @better-auth/cli generate --config ./packages/auth/src/index.ts --output ./packages/db/src/schema/auth.ts --yes",
-    "outdated:all": "bun outdated --recursive",
-    "update:all": "bun update --recursive --interactive"
+    "db:push": "turbo -F @templator/db db:push",
+    "db:studio": "turbo -F @templator/db db:studio",
+    "db:generate": "turbo -F @templator/db db:generate",
+    "db:migrate": "turbo -F @templator/db db:migrate",
+    "db:local": "turbo -F @templator/db db:local",
+    "deploy": "turbo -F @templator/infra deploy",
+    "destroy": "turbo -F @templator/infra destroy"
   },
   "dependencies": {
-    "@b2b/env": "workspace:*",
+    "@templator/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@b2b/config": "workspace:*",
-    "@types/bun": "catalog:",
-    "turbo": "^2.7.4",
+    "@cloudflare/workers-types": "catalog:",
+    "@templator/config": "workspace:*",
+    "@types/node": "catalog:",
+    "turbo": "^2.6.3",
     "typescript": "catalog:"
   },
   "packageManager": "bun@1.3.5"

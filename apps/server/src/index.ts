@@ -1,48 +1,45 @@
-import { auth } from "@b2b/auth";
-import { env } from "@b2b/env/server";
-import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
-import cors from "cors";
-import express, { type Request, type Response } from "express";
-import { serve } from "inngest/express";
-import { inngest } from "./inngest";
-import { functions } from "./inngest/functions";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { auth } from "@templator/auth";
+import { env } from "@templator/env/server";
 
-const app = express();
+const app = new Hono();
+
+app.use(logger());
 
 app.use(
+  "/*",
   cors({
-    origin: env.CORS_ORIGIN,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: env.CORS_ORIGIN, // your frontend URL
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 
-app.all("/api/auth{/*path}", toNodeHandler(auth));
+// Better Auth handler
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
-app.use(express.json());
+// Test route
+app.get("/", (c) => c.text("OK"));
 
-app.use("/api/inngest", serve({ client: inngest, functions }));
-
-app.get("/", (_req, res) => {
-  res.status(200).send("OK");
-});
-
-app.get("/me", async (req: Request, res: Response) => {
+// /me route
+app.get("/me", async (c) => {
   try {
     const session = await auth.api.getSession({
-      headers: fromNodeHeaders(req.headers as any),
+      headers: c.req.raw.headers, // raw fetch headers
     });
 
-    if (!session) return res.status(401).json({ error: "Not authenticated" });
+    if (!session?.user) {
+      return c.json({ error: "Not authenticated" }, 401);
+    }
 
-    return res.json({ session });
-  } catch (error: any) {
-    console.error("Error fetching session:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return c.json({ session }); // send entire session
+  } catch (e) {
+    console.error(e);
+    return c.json({ error: "Internal server error" }, 500);
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
-});
+export default app;

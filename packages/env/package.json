@@ -1,5 +1,5 @@
 {
-  "name": "@b2b/env",
+  "name": "@templator/env",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,8 +13,9 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@b2b/config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@templator/config": "workspace:*",
+    "@templator/infra": "workspace:*",
+    "@types/node": "catalog:",
     "typescript": "catalog:"
   }
 }

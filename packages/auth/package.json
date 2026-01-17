@@ -1,5 +1,5 @@
 {
-  "name": "@b2b/auth",
+  "name": "@templator/auth",
   "type": "module",
   "exports": {
     ".": {
@@ -11,16 +11,16 @@
   },
   "scripts": {},
   "dependencies": {
-    "@b2b/db": "workspace:*",
-    "@b2b/env": "workspace:*",
     "@polar-sh/better-auth": "catalog:",
-    "@polar-sh/sdk": "^0.42.1",
+    "@polar-sh/sdk": "^0.42.2",
+    "@templator/db": "workspace:*",
+    "@templator/env": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@b2b/config": "workspace:*",
+    "@templator/config": "workspace:*",
     "typescript": "catalog:"
   }
 }
