@@ -18,8 +18,8 @@
     "@polar-sh/better-auth": "catalog:",
     "@tailwindcss/vite": "^4.0.15",
     "@tanstack/react-form": "^1.12.3",
-    "@tanstack/react-query": "^5.90.18",
-    "@tanstack/react-router": "^1.141.1",
+    "@tanstack/react-query": "^5.90.19",
+    "@tanstack/react-router": "^1.154.8",
     "@templator/auth": "workspace:*",
     "@templator/env": "workspace:*",
     "better-auth": "catalog:",
@@ -27,7 +27,7 @@
     "clsx": "^2.1.1",
     "dotenv": "catalog:",
     "libsql": "catalog:",
-    "lucide-react": "^0.473.0",
+    "lucide-react": "^0.562.0",
     "next-themes": "^0.4.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -39,18 +39,18 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@tanstack/react-router-devtools": "^1.141.1",
-    "@tanstack/router-plugin": "^1.141.1",
+    "@tanstack/react-router-devtools": "^1.154.8",
+    "@tanstack/router-plugin": "^1.154.8",
     "@templator/config": "workspace:*",
     "@types/node": "catalog:",
-    "@types/react": "19.2.7",
+    "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "@vite-pwa/assets-generator": "^1.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^5.1.2",
     "alchemy": "catalog:",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.15",
     "typescript": "catalog:",
-    "vite": "^6.2.2"
+    "vite": "^7.3.1"
   }
 }

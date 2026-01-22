@@ -13,7 +13,7 @@
     "@templator/env": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
-    "hono": "^4.8.2",
+    "hono": "^4.11.5",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -21,8 +21,8 @@
     "@templator/config": "workspace:*",
     "@types/node": "catalog:",
     "alchemy": "catalog:",
-    "tsdown": "^0.16.5",
+    "tsdown": "^0.20.0",
     "typescript": "catalog:",
-    "wrangler": "^4.54.0"
+    "wrangler": "^4.60.0"
   }
 }
